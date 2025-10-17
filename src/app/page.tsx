@@ -1,59 +1,110 @@
 'use client';
 
+import { useState } from 'react';
 import styles from './page.module.css';
 
+const SHAPES = {
+  I: {
+    shape: [[1, 1, 1, 1]],
+    color: '#00f0f0',
+  },
+  O: {
+    shape: [
+      [1, 1],
+      [1, 1],
+    ],
+    color: '#f0f000',
+  },
+  T: {
+    shape: [
+      [0, 1, 0],
+      [1, 1, 1],
+    ],
+    color: '#a000f0',
+  },
+  L: {
+    shape: [
+      [0, 0, 1],
+      [1, 1, 1],
+    ],
+    color: '#f0a000',
+  },
+  J: {
+    shape: [
+      [1, 0, 0],
+      [1, 1, 1],
+    ],
+    color: '#0000f0',
+  },
+  S: {
+    shape: [
+      [0, 1, 1],
+      [1, 1, 0],
+    ],
+    color: '#00f000',
+  },
+  Z: {
+    shape: [
+      [1, 1, 0],
+      [0, 1, 1],
+    ],
+    color: '#f00000',
+  },
+};
+
+const SHAPE_KEYS = Object.keys(SHAPES);
+
 export default function Home() {
+  // ゲームの盤面の状態を管理します
+  const [board, setBoard] = useState([
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+  ]);
+
   return (
-    <div className={styles.container}>
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
+    <main className={styles.container}>
+      {/* ゲーム盤面 */}
+      <div className={styles.board}>
+        {board.map((row, rowIndex) =>
+          row.map((_, colIndex) => <div key={`${rowIndex}-${colIndex}`} className={styles.cell} />),
+        )}
+      </div>
 
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code} style={{ backgroundColor: '#fafafa' }}>
-            src/app/page.tsx
-          </code>
-        </p>
-
-        <div className={styles.grid}>
-          <a className={styles.card} href="https://nextjs.org/docs">
-            <h2>Documentation &rarr;</h2>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a className={styles.card} href="https://nextjs.org/learn">
-            <h2>Learn &rarr;</h2>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a className={styles.card} href="https://github.com/vercel/next.js/tree/master/examples">
-            <h2>Examples &rarr;</h2>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            className={styles.card}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          >
-            <h2>Deploy &rarr;</h2>
-            <p>Instantly deploy your Next.js site to a public URL with Vercel.</p>
-          </a>
-        </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <span className={styles.logo}>
-            <img src="vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </span>
-        </a>
-      </footer>
-    </div>
+      {/* --- ここから追加 --- */}
+      {/* 手持ちのブロックを表示するエリア */}
+      <div className={styles.holdingArea}>
+        {/* holdingShapesの配列を元に、一つずつブロックを描画 */}
+        {holdingShapes.map((shapeKey, index) => {
+          const block = SHAPES[shapeKey as keyof typeof SHAPES];
+          return (
+            // ブロック全体
+            <div key={index} className={styles.block}>
+              {/* ブロックの形を描画 */}
+              {block.shape.map((row, rowIndex) => (
+                <div key={rowIndex} className={styles.blockRow}>
+                  {row.map((cell, colIndex) => (
+                    <div
+                      key={colIndex}
+                      className={styles.blockCell}
+                      style={{
+                        // cellが1の時だけ色をつけ、0の時は透明にする
+                        backgroundColor: cell ? block.color : 'transparent',
+                      }}
+                    />
+                  ))}
+                </div>
+              ))}
+            </div>
+          );
+        })}
+      </div>
+      {/* --- ここまで追加 --- */}
+    </main>
   );
 }
