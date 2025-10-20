@@ -6,12 +6,48 @@ import styles from './page.module.css';
 // (SHAPES, SHAPE_KEYS の定義は変更なし)
 const SHAPES = {
   I: { shape: [[1, 1, 1, 1]], color: '#00f0f0' },
-  O: { shape: [[1, 1], [1, 1]], color: '#f0f000' },
-  T: { shape: [[0, 1, 0], [1, 1, 1]], color: '#a000f0' },
-  L: { shape: [[0, 0, 1], [1, 1, 1]], color: '#f0a000' },
-  J: { shape: [[1, 0, 0], [1, 1, 1]], color: '#0000f0' },
-  S: { shape: [[0, 1, 1], [1, 1, 0]], color: '#00f000' },
-  Z: { shape: [[1, 1, 0], [0, 1, 1]], color: '#f00000' },
+  O: {
+    shape: [
+      [1, 1],
+      [1, 1],
+    ],
+    color: '#f0f000',
+  },
+  T: {
+    shape: [
+      [0, 1, 0],
+      [1, 1, 1],
+    ],
+    color: '#a000f0',
+  },
+  L: {
+    shape: [
+      [0, 0, 1],
+      [1, 1, 1],
+    ],
+    color: '#f0a000',
+  },
+  J: {
+    shape: [
+      [1, 0, 0],
+      [1, 1, 1],
+    ],
+    color: '#0000f0',
+  },
+  S: {
+    shape: [
+      [0, 1, 1],
+      [1, 1, 0],
+    ],
+    color: '#00f000',
+  },
+  Z: {
+    shape: [
+      [1, 1, 0],
+      [0, 1, 1],
+    ],
+    color: '#f00000',
+  },
 };
 const SHAPE_KEYS = Object.keys(SHAPES);
 
@@ -36,11 +72,7 @@ export default function Home() {
   const [draggingPosition, setDraggingPosition] = useState({ x: 0, y: 0 });
 
   // 3. マウスのボタンが押された時（ブロックを掴んだ時）の処理
-  const handleMouseDown = (
-    e: React.MouseEvent,
-    shapeKey: string,
-    index: number
-  ) => {
+  const handleMouseDown = (e: React.MouseEvent, shapeKey: string, index: number) => {
     // どのブロックを掴んだか、名前を記憶する
     setDraggingBlock(shapeKey);
     // マウスの初期位置を記憶する
@@ -63,17 +95,11 @@ export default function Home() {
   };
 
   return (
-    <main
-      className={styles.container}
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
-    >
+    <main className={styles.container} onMouseMove={handleMouseMove} onMouseUp={handleMouseUp}>
       {/* ゲーム盤面 */}
       <div className={styles.board}>
         {board.map((row, rowIndex) =>
-          row.map((_, colIndex) => (
-            <div key={`${rowIndex}-${colIndex}`} className={styles.cell} />
-          ))
+          row.map((_, colIndex) => <div key={`${rowIndex}-${colIndex}`} className={styles.cell} />),
         )}
       </div>
 
@@ -82,7 +108,6 @@ export default function Home() {
         {holdingShapes.map((shapeKey, index) => {
           const block = SHAPES[shapeKey as keyof typeof SHAPES];
           return (
-            // --- ▼▼▼ onMouseDownイベントをここに追加 ▼▼▼ ---
             <div
               key={index}
               className={styles.block}
@@ -107,34 +132,31 @@ export default function Home() {
         })}
       </div>
 
-
       {/* 6. 掴んでいる最中のブロックを、マウスに追従させて表示する */}
       {draggingBlock && (
         <div
           className={styles.draggingBlock}
           style={{
-            left: draggingPosition.x, 
-            top: draggingPosition.y, 
+            left: draggingPosition.x,
+            top: draggingPosition.y,
           }}
         >
           {/* 掴んでいるブロックの形を描画 */}
-          {SHAPES[draggingBlock as keyof typeof SHAPES].shape.map(
-            (row, rowIndex) => (
-              <div key={rowIndex} className={styles.blockRow}>
-                {row.map((cell, colIndex) => (
-                  <div
-                    key={colIndex}
-                    className={styles.blockCell}
-                    style={{
-                      backgroundColor: cell
-                        ? SHAPES[draggingBlock as keyof typeof SHAPES].color
-                        : 'transparent',
-                    }}
-                  />
-                ))}
-              </div>
-            )
-          )}
+          {SHAPES[draggingBlock as keyof typeof SHAPES].shape.map((row, rowIndex) => (
+            <div key={rowIndex} className={styles.blockRow}>
+              {row.map((cell, colIndex) => (
+                <div
+                  key={colIndex}
+                  className={styles.blockCell}
+                  style={{
+                    backgroundColor: cell
+                      ? SHAPES[draggingBlock as keyof typeof SHAPES].color
+                      : 'transparent',
+                  }}
+                />
+              ))}
+            </div>
+          ))}
         </div>
       )}
     </main>
