@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react'; // useEffectを追加
+import { useEffect, useState } from 'react'; // useEffectを追加
 import styles from './page.module.css';
 
 // ブロックの定義
@@ -95,11 +95,7 @@ export default function Home() {
   } | null>(null);
 
   // 1. マウスダウン：ドラッグ開始
-  const handleMouseDown = (
-    e: React.MouseEvent,
-    shapeKey: string,
-    index: number
-  ) => {
+  const handleMouseDown = (e: React.MouseEvent, shapeKey: string, index: number) => {
     setDraggingBlock(shapeKey);
     setDraggingPosition({ x: e.clientX, y: e.clientY });
   };
@@ -131,12 +127,7 @@ export default function Home() {
             const targetCol = hoveringCell.col + c - offsetX;
 
             // 盤面外チェック
-            if (
-              targetRow < 0 ||
-              targetRow >= 8 ||
-              targetCol < 0 ||
-              targetCol >= 8
-            ) {
+            if (targetRow < 0 || targetRow >= 8 || targetCol < 0 || targetCol >= 8) {
               canPlace = false;
               break;
             }
@@ -224,11 +215,7 @@ export default function Home() {
   };
 
   return (
-    <main
-      className={styles.container}
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
-    >
+    <main className={styles.container} onMouseMove={handleMouseMove} onMouseUp={handleMouseUp}>
       {/* ゲーム盤面 */}
       <div className={styles.board} onMouseLeave={() => setHoveringCell(null)}>
         {board.map((row, rowIndex) =>
@@ -236,14 +223,12 @@ export default function Home() {
             <div
               key={`${rowIndex}-${colIndex}`}
               className={styles.cell}
-              onMouseEnter={() =>
-                setHoveringCell({ row: rowIndex, col: colIndex })
-              }
+              onMouseEnter={() => setHoveringCell({ row: rowIndex, col: colIndex })}
               style={{
                 backgroundColor: row[colIndex] !== 0 ? '#555' : '#ddd',
               }}
             />
-          ))
+          )),
         )}
       </div>
 
@@ -284,23 +269,21 @@ export default function Home() {
             top: draggingPosition.y,
           }}
         >
-          {SHAPES[draggingBlock as keyof typeof SHAPES].shape.map(
-            (row, rowIndex) => (
-              <div key={rowIndex} className={styles.blockRow}>
-                {row.map((cell, colIndex) => (
-                  <div
-                    key={colIndex}
-                    className={styles.blockCell}
-                    style={{
-                      backgroundColor: cell
-                        ? SHAPES[draggingBlock as keyof typeof SHAPES].color
-                        : 'transparent',
-                    }}
-                  />
-                ))}
-              </div>
-            )
-          )}
+          {SHAPES[draggingBlock as keyof typeof SHAPES].shape.map((row, rowIndex) => (
+            <div key={rowIndex} className={styles.blockRow}>
+              {row.map((cell, colIndex) => (
+                <div
+                  key={colIndex}
+                  className={styles.blockCell}
+                  style={{
+                    backgroundColor: cell
+                      ? SHAPES[draggingBlock as keyof typeof SHAPES].color
+                      : 'transparent',
+                  }}
+                />
+              ))}
+            </div>
+          ))}
         </div>
       )}
     </main>
