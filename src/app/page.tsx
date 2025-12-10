@@ -48,7 +48,7 @@ const SHAPES = {
     ],
     color: '#f00000',
   },
-  I3: {
+  I2: {
     shape: [[1], [1], [1]],
     color: '#00d0d0',
   },
@@ -240,7 +240,6 @@ export default function Home() {
                   {row.map((cell, colIndex) => (
                     <div
                       key={colIndex}
-                      /* ★変更点：0なら透明クラス(styles.transparent)を追加 */
                       className={`${styles.blockCell} ${cell === 0 ? styles.transparent : ''}`}
                       style={{
                         backgroundColor: cell !== 0 ? block.color : 'transparent',
@@ -268,7 +267,6 @@ export default function Home() {
               {row.map((cell, colIndex) => (
                 <div
                   key={colIndex}
-                  /* ★変更点：0なら透明クラスを追加 */
                   className={`${styles.blockCell} ${cell === 0 ? styles.transparent : ''}`}
                   style={{
                     backgroundColor:

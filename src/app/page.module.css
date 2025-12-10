@@ -1,5 +1,3 @@
-/* page.module.css */
-
 .container {
   display: flex;
   flex-direction: column;
@@ -38,7 +36,7 @@
   display: flex;
   flex-direction: column;
   margin: 0 15px;
-  cursor: grab; /* マウスカーソルを掴む手に */
+  cursor: grab;
 }
 
 .blockRow {
@@ -49,21 +47,20 @@
   width: 40px;
   height: 40px;
   box-shadow:
-    inset 2px 2px 3px rgb(255 255 255 / 40%),
-    inset -2px -2px 3px rgb(0 0 0 / 20%);
+    inset 3px 3px 4px rgb(255 255 255 / 40%),
+    inset -3px -3px 4px rgb(0 0 0 / 20%);
 }
 
-/* ★今回追加した修正：0の部分を透明にするクラス */
 .transparent {
-  pointer-events: none; /* クリック判定も消す */
-  background-color: transparent; /* 背景を透明に */
-  box-shadow: none; /* 影を消す */
+  pointer-events: none;
+  background-color: transparent;
+  box-shadow: none;
 }
 
 .draggingBlock {
-  position: fixed; /* absoluteよりfixedの方が画面追従しやすい場合があります */
+  position: fixed;
   z-index: 1000;
-  pointer-events: none; /* ドラッグ中のブロックがマウスイベントを邪魔しないように */
+  pointer-events: none;
   opacity: 0.8;
-  transform: translate(-50%, -50%); /* マウスの中心に合わせる */
+  transform: translate(-50%, -50%);
 }
