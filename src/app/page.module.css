@@ -15,14 +15,12 @@
   gap: 2px;
   background-color: #333;
   border: 4px solid #333;
-  border-radius: 5px;
 }
 
 .cell {
   width: 40px;
   height: 40px;
   background-color: #ddd;
-  border-radius: 3px;
 }
 
 .holdingArea {
@@ -46,7 +44,9 @@
 .blockCell {
   width: 40px;
   height: 40px;
-  border-radius: 2px;
+  box-shadow:
+    inset 2px 2px 3px rgb(255 255 255 / 40%),
+    inset -2px -2px 3px rgb(0 0 0 / 20%);
 }
 
 .draggingBlock {

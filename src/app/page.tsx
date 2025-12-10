@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react'; // useEffectを追加
+import { useEffect, useState } from 'react';
 import styles from './page.module.css';
 
 // ブロックの定義
@@ -79,7 +79,7 @@ export default function Home() {
   // エラー回避のため、最初は空配列にしておく
   const [holdingShapes, setHoldingShapes] = useState<string[]>([]);
 
-  // 画面が表示された後に、ランダムなブロックをセットする (ハイドレーションエラー対策)
+  // 画面が表示された後に、ランダムなブロックをセットする
   useEffect(() => {
     setHoldingShapes(getRandomShapes(3));
   }, []);
@@ -95,7 +95,8 @@ export default function Home() {
   } | null>(null);
 
   // 1. マウスダウン：ドラッグ開始
-  const handleMouseDown = (e: React.MouseEvent, shapeKey: string, index: number) => {
+  // (index引数は使わないので削除しました)
+  const handleMouseDown = (e: React.MouseEvent, shapeKey: string) => {
     setDraggingBlock(shapeKey);
     setDraggingPosition({ x: e.clientX, y: e.clientY });
   };
@@ -240,7 +241,8 @@ export default function Home() {
             <div
               key={index}
               className={styles.block}
-              onMouseDown={(e) => handleMouseDown(e, shapeKey, index)}
+              // handleMouseDown に index を渡さず、shapeKey だけ渡すように変更
+              onMouseDown={(e) => handleMouseDown(e, shapeKey)}
             >
               {block.shape.map((row, rowIndex) => (
                 <div key={rowIndex} className={styles.blockRow}>
