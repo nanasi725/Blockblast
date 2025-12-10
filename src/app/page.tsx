@@ -48,6 +48,24 @@ const SHAPES = {
     ],
     color: '#f00000',
   },
+  I3: {
+    shape: [[1], [1], [1]],
+    color: '#00d0d0',
+  },
+  L2: {
+    shape: [
+      [1, 0],
+      [1, 1],
+    ],
+    color: '#d0a000',
+  },
+  J2: {
+    shape: [
+      [0, 1],
+      [1, 1],
+    ],
+    color: '#0000d0',
+  },
 };
 
 const SHAPE_KEYS = Object.keys(SHAPES);
@@ -76,10 +94,9 @@ export default function Home() {
   ]);
 
   // 手持ちのブロック
-  // エラー回避のため、最初は空配列にしておく
   const [holdingShapes, setHoldingShapes] = useState<string[]>([]);
 
-  // 画面が表示された後に、ランダムなブロックをセットする
+  // 初期化時にランダムセット
   useEffect(() => {
     setHoldingShapes(getRandomShapes(3));
   }, []);
@@ -95,7 +112,6 @@ export default function Home() {
   } | null>(null);
 
   // 1. マウスダウン：ドラッグ開始
-  // (index引数は使わないので削除しました)
   const handleMouseDown = (e: React.MouseEvent, shapeKey: string) => {
     setDraggingBlock(shapeKey);
     setDraggingPosition({ x: e.clientX, y: e.clientY });
@@ -114,26 +130,22 @@ export default function Home() {
       const block = SHAPES[draggingBlock as keyof typeof SHAPES];
       const shapeData = block.shape;
 
-      // ブロックの中心をマウス位置に合わせるための調整値
       const offsetY = Math.floor(shapeData.length / 2);
       const offsetX = Math.floor(shapeData[0].length / 2);
 
       let canPlace = true;
 
-      // --- 配置可能かチェック ---
+      // 配置可能かチェック
       for (let r = 0; r < shapeData.length; r++) {
         for (let c = 0; c < shapeData[r].length; c++) {
           if (shapeData[r][c] === 1) {
             const targetRow = hoveringCell.row + r - offsetY;
             const targetCol = hoveringCell.col + c - offsetX;
 
-            // 盤面外チェック
             if (targetRow < 0 || targetRow >= 8 || targetCol < 0 || targetCol >= 8) {
               canPlace = false;
               break;
             }
-
-            // すでにブロックがあるかチェック
             if (board[targetRow][targetCol] !== 0) {
               canPlace = false;
               break;
@@ -142,7 +154,7 @@ export default function Home() {
         }
       }
 
-      // --- 配置実行 ---
+      // 配置実行
       if (canPlace) {
         const newBoard = board.map((row) => [...row]);
 
@@ -157,60 +169,40 @@ export default function Home() {
           }
         }
 
-        // --- ライン消去ロジック ---
+        // ライン消去ロジック（行と列）
         const rowsToClear: number[] = [];
         const colsToClear: number[] = [];
 
-        // 横の列（行）をチェック
         for (let r = 0; r < 8; r++) {
-          if (newBoard[r].every((cell) => cell !== 0)) {
-            rowsToClear.push(r);
-          }
+          if (newBoard[r].every((cell) => cell !== 0)) rowsToClear.push(r);
         }
-
-        // 縦の列（列）をチェック
         for (let c = 0; c < 8; c++) {
           const column = newBoard.map((row) => row[c]);
-          if (column.every((cell) => cell !== 0)) {
-            colsToClear.push(c);
-          }
+          if (column.every((cell) => cell !== 0)) colsToClear.push(c);
         }
 
-        // 該当する行を消す
         rowsToClear.forEach((r) => {
-          for (let c = 0; c < 8; c++) {
-            newBoard[r][c] = 0;
-          }
+          for (let c = 0; c < 8; c++) newBoard[r][c] = 0;
         });
-
-        // 該当する列を消す
         colsToClear.forEach((c) => {
-          for (let r = 0; r < 8; r++) {
-            newBoard[r][c] = 0;
-          }
+          for (let r = 0; r < 8; r++) newBoard[r][c] = 0;
         });
 
-        // 盤面更新
         setBoard(newBoard);
 
-        // --- 手持ちブロックの更新 ---
+        // 手持ちブロック更新
         const newHoldingShapes = [...holdingShapes];
         const indexToDelete = newHoldingShapes.indexOf(draggingBlock);
-
         if (indexToDelete !== -1) {
           newHoldingShapes.splice(indexToDelete, 1);
         }
-
-        // 手持ちが空になったら補充
         if (newHoldingShapes.length === 0) {
           newHoldingShapes.push(...getRandomShapes(3));
         }
-
         setHoldingShapes(newHoldingShapes);
       }
     }
 
-    // ドラッグ状態のリセット
     setDraggingBlock(null);
     setDraggingPosition({ x: 0, y: 0 });
   };
@@ -241,7 +233,6 @@ export default function Home() {
             <div
               key={index}
               className={styles.block}
-              // handleMouseDown に index を渡さず、shapeKey だけ渡すように変更
               onMouseDown={(e) => handleMouseDown(e, shapeKey)}
             >
               {block.shape.map((row, rowIndex) => (
@@ -249,9 +240,10 @@ export default function Home() {
                   {row.map((cell, colIndex) => (
                     <div
                       key={colIndex}
-                      className={styles.blockCell}
+                      /* ★変更点：0なら透明クラス(styles.transparent)を追加 */
+                      className={`${styles.blockCell} ${cell === 0 ? styles.transparent : ''}`}
                       style={{
-                        backgroundColor: cell ? block.color : 'transparent',
+                        backgroundColor: cell !== 0 ? block.color : 'transparent',
                       }}
                     />
                   ))}
@@ -262,7 +254,7 @@ export default function Home() {
         })}
       </div>
 
-      {/* ドラッグ中のブロック（浮遊表示） */}
+      {/* ドラッグ中のブロック */}
       {draggingBlock && (
         <div
           className={styles.draggingBlock}
@@ -276,11 +268,13 @@ export default function Home() {
               {row.map((cell, colIndex) => (
                 <div
                   key={colIndex}
-                  className={styles.blockCell}
+                  /* ★変更点：0なら透明クラスを追加 */
+                  className={`${styles.blockCell} ${cell === 0 ? styles.transparent : ''}`}
                   style={{
-                    backgroundColor: cell
-                      ? SHAPES[draggingBlock as keyof typeof SHAPES].color
-                      : 'transparent',
+                    backgroundColor:
+                      cell !== 0
+                        ? SHAPES[draggingBlock as keyof typeof SHAPES].color
+                        : 'transparent',
                   }}
                 />
               ))}
