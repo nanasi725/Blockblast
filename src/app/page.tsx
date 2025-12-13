@@ -66,6 +66,14 @@ const SHAPES = {
     ],
     color: '#0000d0',
   },
+  OO: {
+    shape: [
+      [1, 1, 1],
+      [1, 1, 1],
+      [1, 1, 1],
+    ],
+    color: '#f0f000',
+  },
 };
 
 const SHAPE_KEYS = Object.keys(SHAPES);
